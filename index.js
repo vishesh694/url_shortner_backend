@@ -1,10 +1,14 @@
 const express = require('express');
-const urlRoutes = require('./routes/url')
+
 const {connectToMongoDB} = require('./connect');
 const URL = require('./models/url');
 const { now } = require('mongoose');
 const path = require('path');
+const cookieParser = require('cookie-parser');
+
 const staticRoute = require('./routes/staticRouter');
+const urlRoutes = require('./routes/url')
+const userRoute = require('./routes/user')
 
 const app = express();
 
@@ -17,6 +21,7 @@ app.set('views', path.resolve('./views'))
 
 app.use(express.json())
 app.use(express.urlencoded({extended : false})) 
+app.use(cookieParser)
 
 app.get('/test', async (req, res) =>{
     const allUrls = await URL.find({})
@@ -27,6 +32,7 @@ app.get('/test', async (req, res) =>{
 
 app.use('/', staticRoute);
 app.use('/url', urlRoutes);
+app.use('/user', userRoute)
 
 
 app.listen(PORT, ()=> console.log(`Server Startes at PORT : ${PORT}`))
